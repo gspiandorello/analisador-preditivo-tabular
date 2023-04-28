@@ -10,6 +10,10 @@ public class NaoTerminal {
         this.derivacoes = derivacoes;
     }
 
+    public String getNaoTerminal() {
+        return naoTerminal;
+    }
+
     @Override
     public String toString() {
         return "" + naoTerminal +  " -> " + toStringDerivacoes();

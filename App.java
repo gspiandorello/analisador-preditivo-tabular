@@ -19,7 +19,7 @@ public class App {
             option = in.nextLine();
             switch(option) {
                 case "1":
-                    //cadastrar toda gramática e verificar se ela é LL
+                    //cadastrar a gramática e verificar se ela é LL
                     case1();
                     break;
                 case "2":
@@ -45,7 +45,7 @@ public class App {
 
     public void showMenu() {
         System.out.println("\n===============MENU===============");
-        System.out.println("[1] Cadastrar a gramática");
+        System.out.println("[1] Cadastrar a gramática a ser usada e verificar se ela é LL");
         System.out.println("[2] Mostrar os conjuntos FIRST e FOLLOW das Produções");
         System.out.println("[3] Mostrar a tabela de análise preditiva tabular");
         System.out.println("[4] Digitar uma sentença e mostrar se ela é reconhecida ou não (passo a passo)");
@@ -54,19 +54,8 @@ public class App {
     }
 
     public void case1(){
-        String start;
-        System.out.println("Digite o símbolo de start, com uma letra maiúscula (ex: 'S')");
-        start = in.nextLine();
-        String derivacoesStart;
-        System.out.println("Digite as derivações, separadas por ';' e sem espaços (ex: 'aB;Bb;c')");
-        derivacoesStart = in.nextLine();
-        String[] temporario = derivacoesStart.split(";");
-        ArrayList<String> conjuntoDerivacoesStart = new ArrayList<String>();
-        for(int i = 0; i < temporario.length; i ++){
-            conjuntoDerivacoesStart.add(temporario[i]);
-        }
-        NaoTerminal naoTerminal = new NaoTerminal(start, conjuntoDerivacoesStart);
-        naoTerminais.add(naoTerminal);
+
+        criaSimboloStart();
 
         String opcao;
         do{
@@ -77,13 +66,13 @@ public class App {
             do{
                 opcao = in.nextLine();
                 if (!opcao.equals("1") && !opcao.equals("2")){
-                    System.out.println("Por favor, escolha uma das opções citadas acima");
+                    System.err.println("Por favor, escolha uma das opções citadas acima");
                 }
             }while(!opcao.equals("1") && !opcao.equals("2"));
 
             if(opcao.equals("1")){
                 if(naoTerminais.size() == 8 ){
-                    System.out.println("O limite de não terminais (8) foi excedido, por favor escolha a opção para terminar a gramática");
+                    System.err.println("O limite de não terminais (8) foi excedido, por favor escolha a opção para terminar a gramática");
                 }
                 else{
                     criaNaoTerminal();
@@ -106,10 +95,54 @@ public class App {
 
     }
 
-    public NaoTerminal criaNaoTerminal(){
+    public void criaSimboloStart(){
+        String start;
+        System.out.println("Digite o símbolo de start, com uma letra maiúscula (ex: 'S')");
+        start = in.nextLine();
+        boolean verificaVazio = true;
+        do{
+            if(start.equals("E")){
+                System.err.println("Digite outro símbolo não terminal, com uma letra maiúscula (ex: 'A'), pois a letra E é considerada como vazio");
+                start = in.nextLine();
+            }
+            else{
+                verificaVazio = false;
+            }
+        }while(verificaVazio);
+        String derivacoesStart;
+        System.out.println("Digite as derivações, separadas por ';' e sem espaços (ex: 'aB;Bb;c')");
+        derivacoesStart = in.nextLine();
+        String[] temporario = derivacoesStart.split(";");
+        ArrayList<String> conjuntoDerivacoesStart = new ArrayList<String>();
+        for(int i = 0; i < temporario.length; i ++){
+            conjuntoDerivacoesStart.add(temporario[i]);
+        }
+        NaoTerminal naoTerminal = new NaoTerminal(start, conjuntoDerivacoesStart);
+        naoTerminais.add(naoTerminal);
+    }
+
+    public void criaNaoTerminal(){
         String simbolo;
         System.out.println("Digite o símbolo do não terminal, com uma letra maiúscula (ex: 'A')");
         simbolo = in.nextLine();
+        boolean simboloJaUsado = true;
+        do{
+            if(simbolo.equals("E")){
+                System.err.println("Digite outro símbolo não terminal, com uma letra maiúscula (ex: 'A'), pois a letra E é considerada como vazio");
+                simbolo = in.nextLine();
+            }
+            if(simboloJaUsado){
+                for(int i = 0; i < naoTerminais.size(); i++){
+                    if(simbolo.equals(naoTerminais.get(i).getNaoTerminal())){
+                        System.err.println("Digite outro símbolo não terminal, com uma letra maiúscula (ex: 'A'), pois este já está sendo usado");
+                        simbolo = in.nextLine();
+                    }
+                    else {
+                        simboloJaUsado = false;
+                    }
+                }
+            }
+        } while(simboloJaUsado);
         String derivacoesSimbolo;
         System.out.println("Digite as derivações, separadas por ';' e sem espaços (ex: 'aA;Bb;c;E')");
         derivacoesSimbolo = in.nextLine();
@@ -120,7 +153,9 @@ public class App {
         }
         NaoTerminal naoTerminal = new NaoTerminal(simbolo, conjuntoDerivacoesSimbolo);
         naoTerminais.add(naoTerminal);
+    }
 
-        return naoTerminal;
+    public void verificaGramaticaLL(){
+        //caso ela não seja, pedir para o usuário rodar o programa novamente e cadastrar outra gramática
     }
 }
