@@ -80,7 +80,7 @@ public class App {
             }
         }while(!opcao.equals("2"));
 
-        System.out.println("\n" +  naoTerminais);
+        System.out.println(printGramatica());
     }
 
     public void case2(){
@@ -157,5 +157,13 @@ public class App {
 
     public void verificaGramaticaLL(){
         //caso ela não seja, pedir para o usuário rodar o programa novamente e cadastrar outra gramática
+    }
+
+    public String printGramatica(){
+        String gramatica = "";
+        for(int i = 0; i < naoTerminais.size(); i++){
+            gramatica += "\n" + naoTerminais.get(i).getNaoTerminal() +  " -> " + naoTerminais.get(i).toStringDerivacoes();
+        }
+        return gramatica;
     }
 }

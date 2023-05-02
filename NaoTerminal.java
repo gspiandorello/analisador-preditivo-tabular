@@ -4,6 +4,8 @@ public class NaoTerminal {
     
     private String naoTerminal;
     private ArrayList<String> derivacoes = new ArrayList<String>();
+    private ArrayList<String> first = new ArrayList<String>();
+    private ArrayList<String> follow = new ArrayList<String>();
 
     public NaoTerminal(String naoTerminal, ArrayList<String> derivacoes){
         this.naoTerminal = naoTerminal;
@@ -12,11 +14,6 @@ public class NaoTerminal {
 
     public String getNaoTerminal() {
         return naoTerminal;
-    }
-
-    @Override
-    public String toString() {
-        return "" + naoTerminal +  " -> " + toStringDerivacoes();
     }
 
     public String toStringDerivacoes(){
