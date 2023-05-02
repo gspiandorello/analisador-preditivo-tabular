@@ -1,8 +1,6 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import javax.lang.model.util.ElementScanner6;
-
 public class App {
 
     Scanner in = new Scanner(System.in);
