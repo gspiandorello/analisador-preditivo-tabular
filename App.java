@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.lang.model.util.ElementScanner6;
+
 public class App {
 
     Scanner in = new Scanner(System.in);
@@ -24,6 +26,7 @@ public class App {
                     break;
                 case "2":
                     //mostrar os conjuntos FIRST e FOLLOW das produções
+                    case2();
                     break;
                 case "3":
                     //mostrar a tabela de análise preditiva tabular
@@ -81,10 +84,13 @@ public class App {
         }while(!opcao.equals("2"));
 
         System.out.println(printGramatica());
+        addTodosFirst();
+        arrumandoFirstNaoTerminal();
+        verificaGramaticaLL();
     }
 
     public void case2(){
-
+        System.out.println("\n" + printFirsts());
     }
 
     public void case3(){
@@ -155,8 +161,82 @@ public class App {
         naoTerminais.add(naoTerminal);
     }
 
+    public void addFirst(String simbolo){
+        for(int i = 0; i < naoTerminais.size(); i++){
+            if(simbolo.equals(naoTerminais.get(i).getNaoTerminal())){
+                for(int j = 0; j < naoTerminais.get(i).getDerivacoes().size(); j++){
+                    String derivacao = naoTerminais.get(i).getDerivacoes().get(j);
+                    naoTerminais.get(i).addFirst(String.valueOf(derivacao.charAt(0)));
+                }
+            }
+        }
+    }
+
+    public void addTodosFirst(){
+        for(int i = 0; i < naoTerminais.size(); i++){
+            addFirst(naoTerminais.get(i).getNaoTerminal());
+        }
+    }
+
+    public void arrumandoFirstNaoTerminal(){
+        for(int i = 0; i < naoTerminais.size(); i++){
+            for(int j = 0; j < naoTerminais.get(i).getFirst().size(); j++){
+                for(int k = 0; k < naoTerminais.size(); k++){
+                    if(naoTerminais.get(i).getFirst().get(j).equals(naoTerminais.get(k).getNaoTerminal())){
+                        naoTerminais.get(i).setFirst(naoTerminais.get(k).getFirst());
+                    }
+                }
+            }
+        }    
+    }
+
     public void verificaGramaticaLL(){
-        //caso ela não seja, pedir para o usuário rodar o programa novamente e cadastrar outra gramática
+        boolean temRecursaoAEsquerda = false;
+        boolean temDisjuncaoParAPar = false;
+
+        for(int i = 0; i < naoTerminais.size(); i++){
+            for(int j = 0; j < naoTerminais.get(i).getFirst().size(); j++){
+                String first = naoTerminais.get(i).getFirst().get(j);
+                if(naoTerminais.get(i).getNaoTerminal().equals(first)){
+                    temRecursaoAEsquerda = true;
+                }
+            }
+        }
+
+        for(int i = 0; i < naoTerminais.size(); i++){
+            for(int j = 0; j < naoTerminais.get(i).getFirst().size(); j++){
+                String first = naoTerminais.get(i).getFirst().get(j);
+                for(int k = 0; k < naoTerminais.get(i).getFirst().size(); k++){
+                    if(j!=k && first.equals(naoTerminais.get(i).getFirst().get(k))){
+                        temDisjuncaoParAPar = true;
+                    }
+                }
+            }
+        }
+
+        if(temRecursaoAEsquerda && temDisjuncaoParAPar){
+            System.out.println("\nEssa gramática apresenta recursão à esquerda e disjunção par a par");
+            System.out.println("Por favor, rode o programa novamente e insira outra gramática");
+        }
+        else if(temRecursaoAEsquerda){
+            System.out.println("\nEssa gramática apresenta recursão à esquerda");
+            System.out.println("Por favor, rode o programa novamente e insira outra gramática");
+        }
+        else if(temDisjuncaoParAPar){
+            System.out.println("\nEssa gramática apresenta disjunção par a par");
+            System.out.println("Por favor, rode o programa novamente e insira outra gramática");
+        }
+        else{
+            System.out.println("\nEssa é uma gramática LL, pode selecionar as outras opções do menu");
+        }
+    }
+
+    public String printFirsts(){
+        String firsts = "";
+        for(int i = 0; i < naoTerminais.size(); i++){
+            System.out.println(naoTerminais.get(i).toStringFirst());
+        }
+        return firsts;
     }
 
     public String printGramatica(){

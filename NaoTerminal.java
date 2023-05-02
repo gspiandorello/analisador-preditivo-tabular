@@ -16,6 +16,26 @@ public class NaoTerminal {
         return naoTerminal;
     }
 
+    public ArrayList<String> getDerivacoes() {
+        return derivacoes;
+    }
+
+    public ArrayList<String> getFirst() {
+        return first;
+    }
+
+    public void setFirst(ArrayList<String> first) {
+        this.first = first;
+    }
+
+    public void addFirst(String firstSimbolo){
+        first.add(firstSimbolo);
+    }
+
+    public void addFollow(String followSimbolo){
+        follow.add(followSimbolo);
+    }
+
     public String toStringDerivacoes(){
         String toStringDerivacoes = "";
 
@@ -31,6 +51,17 @@ public class NaoTerminal {
         return toStringDerivacoes;
     }
 
-    
-
+    public String toStringFirst(){
+        String toStringFirst = "";
+        toStringFirst += "First(" + naoTerminal + ") = { ";
+        for(int i = 0; i < first.size(); i++){
+            if(i == derivacoes.size()-1){
+                toStringFirst += first.get(i) + " }";
+            }
+            else{
+                toStringFirst += first.get(i) + ", ";
+            }
+        }
+        return toStringFirst;
+    }
 }
