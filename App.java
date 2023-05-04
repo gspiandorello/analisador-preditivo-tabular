@@ -28,11 +28,13 @@ public class App {
                     break;
                 case "3":
                     //mostrar a tabela de análise preditiva tabular
+                    case3();
                     break;
                 case "4":
                     //realizar a simulação da análise: verifica se uma sentença digitada é reconhecida ou
                     //não, demonstrando o reconhecimento passo a passo (autômato de pilha controlado
                     //pela tabela de análise).
+                    case4();
                     break;
                 case "5":
                     break;
