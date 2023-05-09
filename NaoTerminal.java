@@ -24,6 +24,10 @@ public class NaoTerminal {
         return first;
     }
 
+    public ArrayList<String> getFollow() {
+        return follow;
+    }
+
     public void setFirst(ArrayList<String> first) {
         this.first = first;
     }
@@ -63,5 +67,19 @@ public class NaoTerminal {
             }
         }
         return toStringFirst;
+    }
+
+    public String toStringFollow(){
+        String toStringFollow = "";
+        toStringFollow += "Follow(" + naoTerminal + ") = { ";
+        for(int i = 0; i < follow.size(); i++){
+            if(i == follow.size()-1){
+                toStringFollow += follow.get(i) + " }";
+            }
+            else{
+                toStringFollow += follow.get(i) + ", ";
+            }
+        }
+        return toStringFollow;
     }
 }

@@ -1,5 +1,8 @@
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 public class App {
 
@@ -87,10 +90,15 @@ public class App {
         addTodosFirst();
         arrumandoFirstNaoTerminal();
         verificaGramaticaLL();
+        addFollow();
+        //arrumandoFollowNaoTerminal();
     }
 
     public void case2(){
-        System.out.println("\n" + printFirsts());
+        System.out.println("\n");
+        printFirsts();
+        System.out.println("\n");
+        printFollows();
     }
 
     public void case3(){
@@ -241,12 +249,21 @@ public class App {
         }
     }
 
-    public String printFirsts(){
-        String firsts = "";
+    public boolean isTerminal(String symbol) {
+        // assume que os terminais são letras minúsculas ou dígitos
+        return Character.isLowerCase(symbol.charAt(0)) || Character.isDigit(symbol.charAt(0));
+    }
+ 
+    public void printFirsts(){
         for(int i = 0; i < naoTerminais.size(); i++){
             System.out.println(naoTerminais.get(i).toStringFirst());
         }
-        return firsts;
+    }
+
+    public void printFollows(){
+        for(int i = 0; i < naoTerminais.size(); i++){
+            System.out.println(naoTerminais.get(i).toStringFollow());
+        }
     }
 
     public String printGramatica(){
