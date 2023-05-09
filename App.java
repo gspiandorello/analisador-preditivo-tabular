@@ -103,6 +103,7 @@ public class App {
     }
 
     public void case3(){
+        System.out.println("\nTABELA PREDITIVA TABULAR:\n");
         gerarTabela();
     }
 
