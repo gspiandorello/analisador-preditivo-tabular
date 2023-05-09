@@ -55,7 +55,7 @@ public class NaoTerminal {
         String toStringFirst = "";
         toStringFirst += "First(" + naoTerminal + ") = { ";
         for(int i = 0; i < first.size(); i++){
-            if(i == derivacoes.size()-1){
+            if(i == first.size()-1){
                 toStringFirst += first.get(i) + " }";
             }
             else{

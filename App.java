@@ -166,7 +166,12 @@ public class App {
             if(simbolo.equals(naoTerminais.get(i).getNaoTerminal())){
                 for(int j = 0; j < naoTerminais.get(i).getDerivacoes().size(); j++){
                     String derivacao = naoTerminais.get(i).getDerivacoes().get(j);
-                    naoTerminais.get(i).addFirst(String.valueOf(derivacao.charAt(0)));
+                    if(derivacao.equals("id")){
+                        naoTerminais.get(i).addFirst(derivacao);
+                    }
+                    else{
+                        naoTerminais.get(i).addFirst(String.valueOf(derivacao.charAt(0)));
+                    }
                 }
             }
         }
@@ -179,15 +184,20 @@ public class App {
     }
 
     public void arrumandoFirstNaoTerminal(){
-        for(int i = 0; i < naoTerminais.size(); i++){
-            for(int j = 0; j < naoTerminais.get(i).getFirst().size(); j++){
-                for(int k = 0; k < naoTerminais.size(); k++){
-                    if(naoTerminais.get(i).getFirst().get(j).equals(naoTerminais.get(k).getNaoTerminal())){
-                        naoTerminais.get(i).setFirst(naoTerminais.get(k).getFirst());
+        boolean verifica = true;
+        while(verifica){
+            verifica = false;
+            for(int i = 0; i < naoTerminais.size(); i++){
+                for(int j = 0; j < naoTerminais.get(i).getFirst().size(); j++){
+                    for(int k = 0; k < naoTerminais.size(); k++){
+                        if(naoTerminais.get(i).getFirst().get(j).equals(naoTerminais.get(k).getNaoTerminal())){
+                            naoTerminais.get(i).setFirst(naoTerminais.get(k).getFirst());
+                            verifica = true;
+                        }
                     }
                 }
-            }
-        }    
+            } 
+        }
     }
 
     public void verificaGramaticaLL(){
