@@ -90,7 +90,8 @@ public class App {
         addTodosFirst();
         arrumandoFirstNaoTerminal();
         verificaGramaticaLL();
-        addFollow();
+        addFollowManual();
+        //addTodosFollow();
         //arrumandoFollowNaoTerminal();
     }
 
@@ -102,13 +103,14 @@ public class App {
     }
 
     public void case3(){
-
+        gerarTabela();
     }
 
     public void case4(){
 
     }
 
+    /*Este método foi feito para criar o simbolo start, pedindo o input ao usuário */
     public void criaSimboloStart(){
         String start;
         System.out.println("Digite o símbolo de start, com uma letra maiúscula (ex: 'S')");
@@ -135,6 +137,7 @@ public class App {
         naoTerminais.add(naoTerminal);
     }
 
+    /*Este método cria os outros símbolos não terminais além do símbolo start, pedindo o input ao usuário */
     public void criaNaoTerminal(){
         String simbolo;
         System.out.println("Digite o símbolo do não terminal, com uma letra maiúscula (ex: 'A')");
@@ -169,6 +172,7 @@ public class App {
         naoTerminais.add(naoTerminal);
     }
 
+    /*Este foi o método que realizar para adicionar o First ao símbolo passado por parâmetro */
     public void addFirst(String simbolo){
         for(int i = 0; i < naoTerminais.size(); i++){
             if(simbolo.equals(naoTerminais.get(i).getNaoTerminal())){
@@ -185,12 +189,14 @@ public class App {
         }
     }
 
+    /*Este método chama o método addFirst para todos os símbolos não terminais */
     public void addTodosFirst(){
         for(int i = 0; i < naoTerminais.size(); i++){
             addFirst(naoTerminais.get(i).getNaoTerminal());
         }
     }
 
+    /*Este método foi desenvolvido para arrumar todos os First que estão com não terminais*/
     public void arrumandoFirstNaoTerminal(){
         boolean verifica = true;
         while(verifica){
@@ -208,6 +214,7 @@ public class App {
         }
     }
 
+    /*Este foi o método que verifica se a gramática é LL, verificando se há recursão a esquerda ou disjunção par a par */
     public void verificaGramaticaLL(){
         boolean temRecursaoAEsquerda = false;
         boolean temDisjuncaoParAPar = false;
@@ -249,23 +256,149 @@ public class App {
         }
     }
 
-    public boolean isTerminal(String symbol) {
-        // assume que os terminais são letras minúsculas ou dígitos
-        return Character.isLowerCase(symbol.charAt(0)) || Character.isDigit(symbol.charAt(0));
+    /*Neste método inserimos os Follow manualmente para tentar gerar a tabela preditiva tabular */
+    public void addFollowManual(){
+        naoTerminais.get(0).addFollow("$");
+        naoTerminais.get(0).addFollow(")");
+        naoTerminais.get(1).addFollow("$");
+        naoTerminais.get(1).addFollow(")");
+        naoTerminais.get(2).addFollow("$");
+        naoTerminais.get(2).addFollow("+");
+        naoTerminais.get(2).addFollow(")");
+        naoTerminais.get(3).addFollow("$");
+        naoTerminais.get(3).addFollow("+");
+        naoTerminais.get(3).addFollow(")");
+        naoTerminais.get(4).addFollow("*");
+        naoTerminais.get(4).addFollow("+");
+        naoTerminais.get(4).addFollow(")");
+        naoTerminais.get(4).addFollow("$");
+    }
+
+    /*Este método foi uma tentativa de adicionar os Follow ao símbolo passado por parâmetro */
+    public void addFollow(String simbolo){
+        int s = -1;
+        if(simbolo.equals(naoTerminais.get(0).getNaoTerminal())){
+            naoTerminais.get(0).addFollow("$");
+        }
+        for(int a = 0; a < naoTerminais.size(); a++){
+            if(simbolo.equals(naoTerminais.get(a).getNaoTerminal())){
+                s = a;
+            }
+        }
+        for(int i = 0; i < naoTerminais.size(); i++){
+            for(int j = 0; j < naoTerminais.get(i).getDerivacoes().size(); j++){
+                String derivacao = naoTerminais.get(i).getDerivacoes().get(j);
+                if(derivacao.contains(naoTerminais.get(s).getNaoTerminal())){
+                    for(int k = 0; k < derivacao.length(); k++){
+                        if(String.valueOf(derivacao.charAt(k)).equals(naoTerminais.get(s).getNaoTerminal()) && k < derivacao.length()-1){
+                            naoTerminais.get(s).addFollow(String.valueOf(derivacao.charAt(k+1)));
+                        }
+                        else{
+                            if(!naoTerminais.get(s).getFollow().contains("follow"+naoTerminais.get(i).getNaoTerminal())){
+                                naoTerminais.get(s).addFollow("follow"+naoTerminais.get(i).getNaoTerminal());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /*Este método chama todos os símbolos não terminais para serem adicionados os Follow em cada um deles */
+    public void addTodosFollow(){
+        for(int i = 0; i < naoTerminais.size(); i++){
+            addFollow(naoTerminais.get(i).getNaoTerminal());
+        }
+    }
+
+    /*Este método foi uma tentativa de arrumar todos os símbolos não terminais que estavam nos Follows */
+    public void arrumandoFollowNaoTerminal(){
+        for(int i = 0; i < naoTerminais.size(); i++){
+            for(int j = 0; j < naoTerminais.get(i).getFollow().size(); j++){
+                if(naoTerminais.get(i).getFollow().get(j).contains("follow")){
+                    String follow = naoTerminais.get(i).getFollow().get(j);
+                    for(int k = 0; k < naoTerminais.size(); k++){
+                        if(String.valueOf(follow.charAt(6)).equals(naoTerminais.get(k).getNaoTerminal())){
+                            for(int l = 0; l < naoTerminais.get(k).getFollow().size(); l++){
+                                naoTerminais.get(i).addFollow(naoTerminais.get(k).getFollow().get(l));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        boolean verifica = true;
+        while(verifica){
+            verifica = false;
+            for(int i = 0; i < naoTerminais.size(); i++){
+                for(int j = 0; j < naoTerminais.get(i).getFollow().size(); j++){
+                    for(int k = 0; k < naoTerminais.size(); k++){
+                        if(naoTerminais.get(i).getFollow().get(j).equals(naoTerminais.get(k).getNaoTerminal())){
+                            for(int m = 0; m < naoTerminais.get(k).getFirst().size(); m++){
+                                naoTerminais.get(i).addFollow(naoTerminais.get(k).getFirst().get(m));
+                            }
+                            if(naoTerminais.get(k).getDerivacoes().contains(naoTerminais.get(k).getNaoTerminal()) && naoTerminais.get(k).getDerivacoes().contains("E")){
+                                for(int l = 0; l < naoTerminais.get(k).getFollow().size(); l++){
+                                    naoTerminais.get(i).addFollow(naoTerminais.get(k).getFollow().get(l));
+                                }
+                            }
+                            verifica = true;
+                        }
+                    }
+                }
+            } 
+        }
+    }
+
+    /*Neste método tentamos gerar a tabela com os Follows inseridos manualmente */
+    public void gerarTabela(){
+        for(int i = 0; i < naoTerminais.size(); i++){
+            for(int j = 0; j < naoTerminais.get(i).getDerivacoes().size(); j++){
+                String derivacao = naoTerminais.get(i).getDerivacoes().get(j);
+                if(derivacao.equals("E")){
+
+                }
+                String print = "";
+                String printDerivacoes = "";
+                ArrayList<String> derivacoes = new ArrayList<String>();
+                for(int k = 0; k < naoTerminais.get(i).getFirst().size(); k++){
+                    if(!naoTerminais.get(i).getFirst().get(k).equals("E")){
+                        if(k == naoTerminais.get(i).getFirst().size()-1){
+                            printDerivacoes += naoTerminais.get(i).getFirst().get(k) + " }";
+                            derivacoes.add(naoTerminais.get(i).getFirst().get(k));
+                        }
+                        else{
+                            printDerivacoes += naoTerminais.get(i).getFirst().get(k) + ", ";
+                            derivacoes.add(naoTerminais.get(i).getFirst().get(k));
+                        }
+                    }
+                }
+                print += naoTerminais.get(i).getNaoTerminal() + " -> " + derivacao + " ... FIRST(" + derivacao + ") = { " + printDerivacoes;
+
+                for(int l = 0; l < derivacoes.size(); l++){
+                    print += "\nAdicionar " + naoTerminais.get(i).getNaoTerminal() + " -> " + derivacao + " em M[E," + derivacoes.get(l) + "]";
+                }
+                System.out.println(print);
+            }
+        }
     }
  
+    /*Este método serve para printar na tela todos os First */
     public void printFirsts(){
         for(int i = 0; i < naoTerminais.size(); i++){
             System.out.println(naoTerminais.get(i).toStringFirst());
         }
     }
 
+    /*Este método serve para printar na tela todos os Follow */
     public void printFollows(){
         for(int i = 0; i < naoTerminais.size(); i++){
             System.out.println(naoTerminais.get(i).toStringFollow());
         }
     }
 
+    /*Este método serve para printar na tela toda a Gramatica */
     public String printGramatica(){
         String gramatica = "";
         for(int i = 0; i < naoTerminais.size(); i++){
